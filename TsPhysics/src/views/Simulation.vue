@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import Body from '@/components/Simulation/Body.vue';
 import { ref } from 'vue';
+import { BodyModel } from '@/models/simulation/BodyModel';
 
-const childRef = ref<InstanceType<typeof Body> | null>(null);
+// Lista de cuerpos en el espacio
+const bodies = ref<BodyModel[]>([
+    new BodyModel(100, 100),
+    new BodyModel(500, 500, "#ff0000"),
+]);
 
-/**
- * Función que empieza el movimiento invocando la función "move" del componente
- * Body
- */
-function startMovement() {
-    childRef.value?.move();
+const moveEverything = () => {
+    // Lógica para mover los cuerpos
+    bodies.value.forEach(body => {
+        body.move();
+    });
 }
 
 </script>
@@ -17,8 +21,8 @@ function startMovement() {
 <template>
     <div class="fondo">
         <p>ESTO ES LA SIMULACIÓN</p>
-        <button @click="startMovement">MOVER</button>
-        <Body ref="childRef" :positionX="500" :positionY="400"></Body>
+        <button @click="moveEverything">MOVER</button>
+        <Body v-for="(body, index) in bodies" :key="index" :positionX="body.positionX" :positionY="body.positionY" :color="body.color" />
     </div>
 </template>
 
